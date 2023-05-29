@@ -1,10 +1,13 @@
 import faiss
 from dotenv import load_dotenv
+from langchain import OpenAI
 from langchain.embeddings.huggingface import HuggingFaceEmbeddings
 from langchain.text_splitter import CharacterTextSplitter
 from llama_index import (
     GPTVectorStoreIndex,
     LangchainEmbedding,
+    LLMPredictor,
+    PromptHelper,
     QuestionAnswerPrompt,
     ServiceContext,
     SimpleDirectoryReader,
@@ -24,6 +27,17 @@ parser = SimpleNodeParser(text_splitter=text_splitter)
 documents = SimpleDirectoryReader("data/faq").load_data()
 nodes = parser.get_nodes_from_documents(documents=documents)
 
+llm_predictor = LLMPredictor(llm=OpenAI(temperature=0, model_name="gpt-3.5-turbo"))
+
+max_input_size = 4096
+num_output = 256
+max_chunk_overlap = 20
+prompt_helper = PromptHelper(
+    max_chunk_overlap=max_chunk_overlap,
+    num_output=num_output,
+    max_input_size=max_input_size,
+)
+
 
 embed_model = LangchainEmbedding(
     HuggingFaceEmbeddings(
@@ -31,7 +45,9 @@ embed_model = LangchainEmbedding(
     )
 )
 
-service_context = ServiceContext.from_defaults(embed_model=embed_model)
+service_context = ServiceContext.from_defaults(
+    embed_model=embed_model, llm_predictor=llm_predictor, prompt_helper=prompt_helper
+)
 
 dimension = 768
 faiss_index = faiss.IndexFlatIP(dimension)
@@ -55,5 +71,6 @@ query_engine = index.as_query_engine(
 )
 
 response = query_engine.query("请问你们海南能发货吗？")
+
 
 print(response)
