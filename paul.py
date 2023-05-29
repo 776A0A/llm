@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-from langchain import OpenAI
+from langchain.chat_models import ChatOpenAI
 from llama_index import (
     GPTVectorStoreIndex,
     LLMPredictor,
@@ -23,7 +23,7 @@ parser = SimpleNodeParser()
 
 nodes = parser.get_nodes_from_documents(documents=documents)
 
-llm_predictor = LLMPredictor(llm=OpenAI(temperature=0, model_name="gpt-3.5-turbo"))
+llm_predictor = LLMPredictor(llm=ChatOpenAI(temperature=0, model_name="gpt-3.5-turbo"))
 max_input_size = 4096
 num_output = 256
 max_chunk_overlap = 20
