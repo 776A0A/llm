@@ -1,3 +1,5 @@
+import os
+
 import faiss
 from dotenv import load_dotenv
 from langchain.chat_models import ChatOpenAI
@@ -15,6 +17,10 @@ from llama_index import (
 )
 from llama_index.node_parser import SimpleNodeParser
 from llama_index.vector_stores.faiss import FaissVectorStore
+
+
+if os.uname().sysname == "Darwin":
+    os.environ["KMP_DUPLICATE_LIB_OK"] = "True"
 
 load_dotenv()
 
