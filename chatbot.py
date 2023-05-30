@@ -102,7 +102,10 @@ graph_query_engine = graph.root_index.as_query_engine(
 graph_config = IndexToolConfig(
     query_engine=graph_query_engine,
     name="Graph Index",
-    description="useful for when you want to answer queries that require analyzing multiple SEC 10-K documents for Uber.",
+    description=(
+        "useful for when you want to answer queries that require "
+        "analyzing multiple SEC 10-K documents for Uber."
+    ),
     tool_kwargs={"return_direct": True},
 )
 
