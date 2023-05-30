@@ -1,4 +1,5 @@
 import os
+import platform
 
 import faiss
 from dotenv import load_dotenv
@@ -19,8 +20,10 @@ from llama_index.node_parser import SimpleNodeParser
 from llama_index.vector_stores.faiss import FaissVectorStore
 
 
-if os.uname().sysname == "Darwin":
+if platform.system() == "Darwin":
     os.environ["KMP_DUPLICATE_LIB_OK"] = "True"
+    print('Set "KMP_DUPLICATE_LIB_OK" to "True"')
+
 
 load_dotenv()
 
